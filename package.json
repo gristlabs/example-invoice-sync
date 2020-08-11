@@ -1,0 +1,21 @@
+{
+  "name": "sync",
+  "version": "1.0.0",
+  "description": "",
+  "main": "grist-api.js",
+  "scripts": {
+    "start": "nodemon -w server/ server/index.js",
+    "start-prod": "node server/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grist-api": "^0.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "webpack": "^4.44.1",
+    "webpack-dev-server": "^3.11.0"
+  }
+}

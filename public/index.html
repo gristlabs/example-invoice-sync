@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Grist Doc Sync</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  </head>
+  <body>
+
+    <button id="sync">Sync</button>
+
+    <script>
+     var syncBtn = document.getElementById("sync");
+     grist.on('message', readDoc);
+     syncBtn.addEventListener('click', onClickSync);
+     grist.ready();
+
+     let lastInvoice = null;
+
+     function readDoc(msg) {
+       console.log("readDoc", msg);
+       const rowId = msg.rowId;
+       if (!rowId) {
+         console.log("sync: no rowId");
+         return;
+       }
+       syncBtn.disabled = true;
+       grist.docApi.fetchSelectedTable().then(v => {
+         const idx = v.id.indexOf(rowId);
+         if (idx < 0) {
+           console.log(`sync: rowId ${rowId} not found`);
+           return;
+         }
+         const row = {};
+         for (const key of Object.keys(v)) {
+           row[key] = v[key][idx];
+         }
+         lastInvoice = row;
+         syncBtn.disabled = false;
+       });
+     }
+
+     function onClickSync(ev) {
+       console.log("using lastInvoice", lastInvoice);
+       return fetch(`/sync/${lastInvoice.Invoice_ID}`, {method: 'POST'})
+       .then((result) => result.json())
+       .then((resultJson) => {
+         console.log("result", resultJson);
+       });
+     }
+    </script>
+  </body>
+</html>
+
