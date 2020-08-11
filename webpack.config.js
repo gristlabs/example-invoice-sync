@@ -7,8 +7,7 @@ const path = require('path');
 module.exports = {
   mode: "development",
   entry: {
-    // main: 'client/main.js',
-    server: 'server/index.js',
+    main: 'client/main.js',
   },
   output: {
     path: path.resolve(__dirname),
@@ -28,17 +27,6 @@ module.exports = {
       { test: /\.tsx?$/, loader: "ts-loader", exclude: /node_modules/ }
     ]
   },
-  // TODO node and externals only needed to deal with grist-api expecting them. It would be better
-  // if grist-api instead provided different entry points for browser and for node.
-  /*
-  node: {
-    os: 'empty',
-    path: 'empty'
-  },
-  externals: {
-    'fs-extra': 'fsExtra',
-  },
-  */
   devServer: {
     contentBase: path.resolve(path.join(__dirname, 'public')),
     port: process.env.PORT || 9200,

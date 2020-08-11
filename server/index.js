@@ -5,8 +5,8 @@
  *
  * For production, build and run like so:
  *
- *    bin/webpack
- *    env GRIST_API_KEY=<YOUR-KEY> node server/server.js
+ *    npm run build
+ *    env GRIST_API_KEY=<YOUR-KEY> npm run start-prod
  *
  * To expose to outside world (e.g. a phone) while developing, adding devServer.host = '0.0.0.0'
  * (or HOST=0.0.0.0 in production) should be enough but does not ask to open the firewall on my
@@ -104,6 +104,7 @@ async function onSync(req, res, next) {
     await gristApiDest.deleteRecords("Items", destItemsToDelete.map(i => i.id));
 
     // Respond to the client request.
+    console.log(`Synced invoice #${invoiceId} with ${itemsCopy.length} items to record ${destInvoice.id}`);
     res.send({id: destInvoice.id});
   } catch (err) {
     console.warn(`Sync failed with ${err}`);
