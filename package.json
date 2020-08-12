@@ -1,15 +1,15 @@
 {
-  "name": "sync",
-  "version": "1.0.0",
-  "description": "",
+  "name": "grist-example-invoice-sync",
+  "version": "0.1.0",
+  "description": "Example server component for a Custom Widget enabling syncing between docs.",
   "scripts": {
     "build": "webpack",
     "start": "nodemon -w webpack.config.js -w server/ node_modules/.bin/webpack-dev-server",
     "start-prod": "node server/index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Grist Labs",
+  "license": "Apache-2.0",
   "dependencies": {
     "grist-api": "^0.1.1"
   },
