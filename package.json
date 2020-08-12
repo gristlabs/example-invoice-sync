@@ -2,10 +2,9 @@
   "name": "sync",
   "version": "1.0.0",
   "description": "",
-  "main": "grist-api.js",
   "scripts": {
     "build": "webpack",
-    "start": "nodemon -w server/ server/index.js",
+    "start": "nodemon -w webpack.config.js -w server/ node_modules/.bin/webpack-dev-server",
     "start-prod": "node server/index.js"
   },
   "keywords": [],

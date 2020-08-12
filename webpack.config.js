@@ -29,7 +29,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.resolve(path.join(__dirname, 'public')),
-    port: process.env.PORT || 9200,
+    port: process.env.PORT || 7777,
     open: false,
 
     before: (app, server) => {
