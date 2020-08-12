@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "Example server component for a Custom Widget enabling syncing between docs.",
   "scripts": {
+    "start": "webpack && node server/index.js",
     "build": "webpack",
-    "start": "nodemon -w webpack.config.js -w server/ node_modules/.bin/webpack-dev-server",
+    "start-dev": "nodemon -w webpack.config.js -w server/ node_modules/.bin/webpack-dev-server",
     "start-prod": "node server/index.js"
   },
   "keywords": [],

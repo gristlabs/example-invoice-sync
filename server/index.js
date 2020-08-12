@@ -1,20 +1,11 @@
 /**
  * In development, run:
  *
- *    env GRIST_API_KEY=<YOUR-KEY> npm start
+ *    env GRIST_API_KEY=<YOUR-KEY> npm run start-dev
  *
  * For production, build and run like so:
  *
- *    npm run build
- *    env GRIST_API_KEY=<YOUR-KEY> npm run start-prod
- *
- * To expose to outside world (e.g. a phone) while developing, adding devServer.host = '0.0.0.0'
- * (or HOST=0.0.0.0 in production) should be enough but does not ask to open the firewall on my
- * mac. This forwarding, however, works for me:
- *
- *    socat -d -d tcp-listen:9300,reuseaddr,fork tcp:localhost:9200
- *
- * Then visit http://<EXT-IP-ADDR>:9300
+ *    env GRIST_API_KEY=<YOUR-KEY> npm start
  */
 const http = require('http');
 const express = require('express');
