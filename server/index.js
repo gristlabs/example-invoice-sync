@@ -79,9 +79,17 @@ async function getCopyInfo(req, res, next) {
     const destInvoice = (await gristApiDest.fetchTable('Invoices', {Invoice_ID: [invoiceId]}))[0];
     debuglog("destInvoice", destInvoice);
 
+    // Include also dest doc info.
+    const docInfo = await gristApiDest._call(`/api/docs/${destDocId}`);
+    const response = {
+      DocUrl: new URL(`/doc/${destDocId}`, GRIST_SERVER).href,
+      DocName: docInfo.name,
+      ...destInvoice,
+    };
+
     // Respond to the client request.
-    console.log(`invoice-copy-info #${invoiceId}: ${destInvoice.Date}, ${destInvoice.Total}`);
-    res.send(destInvoice);
+    console.log(`invoice-copy-info #${invoiceId}: ${response.Date}, ${response.Total}`);
+    res.send(response);
   } catch (err) {
     console.warn(`Sync failed with ${err}`);
     res.status(400).send({error: String(err)});

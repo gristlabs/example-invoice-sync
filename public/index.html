@@ -40,13 +40,14 @@
     <div id="app">
       <template v-if="invoice">
         <div class="line">Invoice <b>{{invoice.id}}</b> to
-          <a v-if="invoice.docUrl" v-bind:href="invoice.docUrl">{{invoice.docName}}</a>
+          <a v-if="invoice.docUrl" v-bind:href="invoice.docUrl" target="_blank">{{invoice.docName}}</a>
           <template v-else>None</template>.
         </div>
       </template>
       <template v-if="copy">
-        <div class="line">Last copied on <b>{{copy.lastCopyDate|datetime}}</b>
+        <div v-if="copy.lastCopyDate" class="line">Last copied on <b>{{copy.lastCopyDate|datetime}}</b>
           ({{copy.invoiceDate|date}} for {{copy.invoiceTotal|currency}})</div>
+        <div class="line" v-else>Last copied: <b>never</b></div>
       </template>
       <template v-if="message">
         <div class="line">{{message}}</div>

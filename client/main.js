@@ -25,8 +25,6 @@ function updateWidget(rowId) {
     const docId = row.InvoicerDocId;
     data.invoice = {
       id: invoiceRow.Invoice_ID,
-      docUrl: docId ? getDocUrl(docId) : '',
-      docName: docId || 'None',
     };
     data.copy = null;
     if (docId) {
@@ -38,10 +36,6 @@ function updateWidget(rowId) {
       syncBtn.disabled = true;
     }
   });
-}
-
-function getDocUrl(docId) {
-  return new URL(`/doc/${docId}`, location.href).href;
 }
 
 function onClickSync(ev) {
@@ -60,10 +54,12 @@ async function getCopyInfo() {
   const value = await resp.json();
   if (resp.status === 200) {
     data.copy = {
-      lastCopyDate: value.Last_Sync ? new Date(value.Last_Sync * 1000) : "-",
-      invoiceDate: value.Date ? new Date(value.Date * 1000) : "-",
+      lastCopyDate: value.Last_Sync ? new Date(value.Last_Sync * 1000) : null,
+      invoiceDate: value.Date ? new Date(value.Date * 1000) : null,
       invoiceTotal: value.Total,
     };
+    data.invoice.docUrl = value.DocUrl;
+    data.invoice.docName = value.DocName;
     data.message = null;
   } else {
     data.copy = null;
