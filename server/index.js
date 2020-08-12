@@ -45,8 +45,8 @@ async function main() {
   initialize(app, server);
 
   // Serve the static page and the build client-side code.
-  app.use('/', express.static('./public'));
-  app.use('/build', express.static('./build'));
+  app.use('/', express.json(), express.static('./public'));
+  app.use('/build', express.json(), express.static('./build'));
 
   await new Promise((resolve, reject) => server.listen(port, host, resolve).on('error', reject));
   console.log(`Server available at http://${host}:${port}`);
@@ -55,9 +55,38 @@ async function main() {
 // When running via webpack-dev-server, it handles static files and runs initialize() directly.
 async function initialize(app, server) {
   app.use(morgan(':date[iso] :method :url :status :response-time ms - :res[content-length]'));
-  app.post('/sync/:invoiceId', express.json(), onSync);
+  app.get('/invoice-copy-info/:invoiceId', getCopyInfo);
+  app.post('/sync/:invoiceId', onSync);
 }
 exports.initialize = initialize;
+
+async function getCopyInfo(req, res, next) {
+  try {
+    const invoiceId = parseInt(req.params.invoiceId, 10);
+    if (!invoiceId) { throw new Error("Invalid or missing invoiceId"); }
+
+    // Find the invoice in the source document.
+    const gristApiSrc = new GristDocAPI(SOURCE_DOC_ID, {apiKey: GRIST_API_KEY, server: GRIST_SERVER});
+    const sourceInvoice = (await gristApiSrc.fetchTable('Invoices', {Invoice_ID: [invoiceId]}))[0];
+    if (!sourceInvoice) { throw new Error(`Invoice ${invoiceId} not found`); }
+    debuglog("sourceInvoice", sourceInvoice);
+
+    // Get the destination document to sync to.
+    const destDocId = sourceInvoice.InvoicerDocId;
+    if (!destDocId || typeof destDocId != 'string') { throw new Error("DestDocId missing or invalid"); }
+    const gristApiDest = new GristDocAPI(destDocId, {apiKey: GRIST_API_KEY, server: GRIST_SERVER});
+
+    const destInvoice = (await gristApiDest.fetchTable('Invoices', {Invoice_ID: [invoiceId]}))[0];
+    debuglog("destInvoice", destInvoice);
+
+    // Respond to the client request.
+    console.log(`invoice-copy-info #${invoiceId}: ${destInvoice.Date}, ${destInvoice.Total}`);
+    res.send(destInvoice);
+  } catch (err) {
+    console.warn(`Sync failed with ${err}`);
+    res.status(400).send({error: String(err)});
+  }
+}
 
 // Handle the request to sync an invoice. The request only includes an `invoiceId` parameter.
 // We use the hard-coded SOURCE_DOC_ID to look up the invoice. It should include InvoicerDocId
@@ -84,6 +113,7 @@ async function onSync(req, res, next) {
 
     // Sync the invoice itself first: it will get added or updated.
     const invoiceCopy = pick(sourceInvoice, ['Invoice_ID', 'Date', 'CustomerJson']);
+    invoiceCopy.Last_Sync = Date.now() / 1000;
     await gristApiDest.syncTable('Invoices', [invoiceCopy], ['Invoice_ID']);
 
     // We need to look it up to get the id of the new record.

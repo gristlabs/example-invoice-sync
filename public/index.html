@@ -4,9 +4,55 @@
     <meta charset="utf-8">
     <title>Grist Doc Sync</title>
     <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.min.js"></script>
   </head>
+  <style>
+  body {
+    font-family: arial, sans-serif;
+  }
+  #sync {
+    appearance: none;
+    background-color: #C83200;
+    border-radius: 0.25em;
+    border: none;
+    color: white;
+    font-size: 150%;
+    padding: 0.25em 0.5em;
+  }
+  #sync:hover:not(:disabled) {
+    background-color: #4682B4;
+  }
+  #sync:disabled {
+    opacity: 0.5;
+    color: lightgrey;
+  }
+  .line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 1em;
+  }
+  .btn {
+    margin: 1em;
+  }
+  </style>
   <body>
-    <button id="sync">Sync</button>
+    <div id="app">
+      <template v-if="invoice">
+        <div class="line">Invoice <b>{{invoice.id}}</b> to
+          <a v-if="invoice.docUrl" v-bind:href="invoice.docUrl">{{invoice.docName}}</a>
+          <template v-else>None</template>.
+        </div>
+      </template>
+      <template v-if="copy">
+        <div class="line">Last copied on <b>{{copy.lastCopyDate|datetime}}</b>
+          ({{copy.invoiceDate|date}} for {{copy.invoiceTotal|currency}})</div>
+      </template>
+      <template v-if="message">
+        <div class="line">{{message}}</div>
+      </template>
+      <div class="line btn"><button id="sync">COPY INVOICE</button></div>
+    </div>
 
     <script src="build/main.bundle.js"></script>
   </body>
