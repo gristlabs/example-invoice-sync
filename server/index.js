@@ -26,8 +26,8 @@ const debuglog = util.debuglog('app');
 
 // TODO For production, try this:
 // const GRIST_SERVER = 'https://docs.getgrist.com';
-const GRIST_SERVER = 'http://localhost:8080';
-const SOURCE_DOC_ID = 'wW5ATuoLAKwH95zj7b8vkf';
+const GRIST_SERVER = process.env.GRIST_SERVER || 'http://localhost:8080';
+const SOURCE_DOC_ID = process.env.SOURCE_DOC_ID || 'wW5ATuoLAKwH95zj7b8vkf';
 
 if (!process.env.GRIST_API_KEY) {
   console.warn('Specify env GRIST_API_KEY=<key> when running server');
