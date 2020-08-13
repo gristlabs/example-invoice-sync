@@ -111,7 +111,7 @@ async function onSync(req, res, next) {
     const gristApiDest = new GristDocAPI(destDocId, {apiKey: GRIST_API_KEY, server: GRIST_SERVER});
 
     // Sync the invoice itself first: it will get added or updated.
-    const invoiceCopy = pick(sourceInvoice, ['Invoice_ID', 'Date', 'CustomerJson']);
+    const invoiceCopy = pick(sourceInvoice, ['Invoice_ID', 'Date', 'CustomerJson', 'Deduction', 'Taxes']);
     invoiceCopy.Last_Sync = Date.now() / 1000;
     await gristApiDest.syncTable('Invoices', [invoiceCopy], ['Invoice_ID']);
 
