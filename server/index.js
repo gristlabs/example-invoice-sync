@@ -137,7 +137,7 @@ async function onSync(req, res, next) {
     res.send({id: destInvoice.id});
   } catch (err) {
     console.warn(`Sync failed with ${err}`);
-    next(err);
+    res.status(400).send({error: String(err)});
   }
 }
 

@@ -28,24 +28,28 @@ function updateWidget(rowId) {
     };
     data.copy = null;
     if (docId) {
+      console.log("sync: getting info for", docId)
       getCopyInfo();
       syncBtn.disabled = false;
       syncBtn.addEventListener('click', onClickSync);
     } else {
+      console.log("sync: no docId", row)
       data.message = null;
       syncBtn.disabled = true;
     }
   });
 }
 
-function onClickSync(ev) {
- console.log("using invoiceRow", invoiceRow);
- return fetch(`/sync/${invoiceRow.Invoice_ID}`, {method: 'POST'})
- .then((result) => result.json())
- .then((resultJson) => {
-   console.log("result", resultJson);
-   return updateWidget(invoiceRow.id);
- });
+async function onClickSync(ev) {
+  console.log("using invoiceRow", invoiceRow);
+  const resp = await fetch(`/sync/${invoiceRow.Invoice_ID}`, {method: 'POST'});
+  const value = await resp.json();
+  if (resp.status === 200) {
+    console.log("result", value);
+    return updateWidget(invoiceRow.id);
+  } else {
+    data.message = value.error || 'Sync failed';
+  }
 }
 
 async function getCopyInfo() {
